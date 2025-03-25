@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "rain-predictor"
+version = "0.1.0"
+description = ""
+# authors = [
+#     {name = "leo centurion",email = "centurionm.leo@gmail.com"}
+# ]
+readme = "README.md"
+package-mode=false
+
+[tool.poetry.dependencies]
+python = "^3.13"
+pandas = "^2.2.3"
+numpy = "^2.2.0"
+seaborn = "^0.13.2"
+statsmodels = "^0.14.4"
+scikit-learn = "^1.5.2"
+flask = "^3.1.0"
+geopy = "^2.4.1"
+
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
