@@ -1,0 +1,82 @@
+openapi: 3.0.0
+info:
+  title: Weather Prediction API
+  version: 1.0.0
+  description: API for predicting rainfall using a trained machine learning model.
+paths:
+  /predict:
+    post:
+      summary: Predict rainfall
+      description: Takes weather data and returns the model's prediction.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  Date:
+                    type: string
+                    format: date
+                  Location:
+                    type: string
+                  MinTemp:
+                    type: number
+                  MaxTemp:
+                    type: number
+                  Rainfall:
+                    type: number
+                  Evaporation:
+                    type: number
+                    nullable: true
+                  Sunshine:
+                    type: number
+                    nullable: true
+                  WindGustDir:
+                    type: string
+                  WindGustSpeed:
+                    type: integer
+                  WindDir9am:
+                    type: string
+                  WindDir3pm:
+                    type: string
+                  WindSpeed9am:
+                    type: integer
+                  WindSpeed3pm:
+                    type: integer
+                  Humidity9am:
+                    type: integer
+                  Humidity3pm:
+                    type: integer
+                  Pressure9am:
+                    type: number
+                  Pressure3pm:
+                    type: number
+                  Cloud9am:
+                    type: integer
+                    nullable: true
+                  Cloud3pm:
+                    type: integer
+                    nullable: true
+                  Temp9am:
+                    type: number
+                  Temp3pm:
+                    type: number
+                  RainToday:
+                    type: string
+      responses:
+        "200":
+          description: Prediction result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  predictions:
+                    type: array
+                    items:
+                      type: number
+        "400":
+          description: Invalid input

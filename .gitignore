@@ -1,2 +1,2 @@
-./src/service/__pycache__/
-/src/service/__pycache__/
+/src/service/__pycache__/*
+/src/service/src/__pycache__/*
