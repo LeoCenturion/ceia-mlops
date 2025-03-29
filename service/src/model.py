@@ -5,10 +5,9 @@ import numpy as np
 import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
-from sklearn.linear_model import LogisticRegression
 from xgboost import XGBClassifier
 
-NAME: str = "num-minmax-logit"
+NAME: str = "num-minmax-xgb"
 
 def read_coords() -> pd.DataFrame:
     coordinates: pd.DataFrame = pd.read_csv("./data/worldcities.csv")
@@ -95,7 +94,7 @@ def make_model(coordinates=read_coords(), city_coordinates=city_coords()):
         ("drop_directions", DropColumnsTransformer(columns=["WindGustDir", "WindDir9am", "WindDir3pm"])),
         ("drop_date_location", DropColumnsTransformer(columns=["Date","Location"])),
         ("scaler", MinMaxScaler()),
-        ("logistic_regression", LogisticRegression(class_weight={1: 0.75, 0: 0.25}, penalty= 'l2'))
+        ("logistic_regression", model)
     ])
     return pipeline
 

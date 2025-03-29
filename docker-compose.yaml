@@ -1,0 +1,18 @@
+services:
+  rain-predictor:
+    restart: always
+    build: './service/'
+    image: rain-predictor
+    ports:
+      - "5000:5000"
+    networks:
+      - cluster
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/v1/liveness"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  cluster:
+    driver: bridge
