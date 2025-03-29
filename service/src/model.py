@@ -10,8 +10,8 @@ from xgboost import XGBClassifier
 
 NAME: str = "num-minmax-logit"
 
-def read_coords():
-    coordinates = pd.read_csv("./data/worldcities.csv")
+def read_coords() -> pd.DataFrame:
+    coordinates: pd.DataFrame = pd.read_csv("./data/worldcities.csv")
     coordinates["Location"] = coordinates["city"]
     coordinates.drop(columns=["city"], inplace = True)
     coordinates = coordinates[coordinates["country"] == "Australia"]
