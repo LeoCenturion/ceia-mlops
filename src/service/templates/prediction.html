@@ -1,0 +1,7 @@
+<div id="prediction-result">
+    {% if prediction is not none %}
+    <h2>Prediction: {% if prediction == 1 %}Rain{% else %}No Rain{% endif %}</h2>
+    {% else %}
+    <p>No prediction available.</p>
+    {% endif %}
+</div>

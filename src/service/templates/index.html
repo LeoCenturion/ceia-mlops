@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Prediction</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <h1>Predict Rainfall</h1>
+    <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML">
+        <div>
+            <label for="Date">Date:</label>
+            <input type="date" id="Date" name="Date">
+        </div>
+        <div>
+            <label for="Location">Location:</label>
+            <input type="text" id="Location" name="Location">
+        </div>
+        <div>
+            <label for="MinTemp">MinTemp:</label>
+            <input type="number" id="MinTemp" name="MinTemp" step="0.1">
+        </div>
+        <div>
+            <label for="MaxTemp">MaxTemp:</label>
+            <input type="number" id="MaxTemp" name="MaxTemp" step="0.1">
+        </div>
+        <div>
+            <label for="Rainfall">Rainfall:</label>
+            <input type="number" id="Rainfall" name="Rainfall" step="0.1">
+        </div>
+        <div>
+            <label for="Evaporation">Evaporation:</label>
+            <input type="number" id="Evaporation" name="Evaporation" step="0.1">
+        </div>
+        <div>
+            <label for="Sunshine">Sunshine:</label>
+            <input type="number" id="Sunshine" name="Sunshine" step="0.1">
+        </div>
+        <div>
+            <label for="WindGustDir">WindGustDir:</label>
+            <input type="text" id="WindGustDir" name="WindGustDir">
+        </div>
+        <div>
+            <label for="WindGustSpeed">WindGustSpeed:</label>
+            <input type="number" id="WindGustSpeed" name="WindGustSpeed">
+        </div>
+        <div>
+            <label for="WindDir9am">WindDir9am:</label>
+            <input type="text" id="WindDir9am" name="WindDir9am">
+        </div>
+        <div>
+            <label for="WindDir3pm">WindDir3pm:</label>
+            <input type="text" id="WindDir3pm" name="WindDir3pm">
+        </div>
+        <div>
+            <label for="WindSpeed9am">WindSpeed9am:</label>
+            <input type="number" id="WindSpeed9am" name="WindSpeed9am">
+        </div>
+        <div>
+            <label for="WindSpeed3pm">WindSpeed3pm:</label>
+            <input type="number" id="WindSpeed3pm" name="WindSpeed3pm">
+        </div>
+        <div>
+            <label for="Humidity9am">Humidity9am:</label>
+            <input type="number" id="Humidity9am" name="Humidity9am">
+        </div>
+        <div>
+            <label for="Humidity3pm">Humidity3pm:</label>
+            <input type="number" id="Humidity3pm" name="Humidity3pm">
+        </div>
+        <div>
+            <label for="Pressure9am">Pressure9am:</label>
+            <input type="number" id="Pressure9am" name="Pressure9am" step="0.1">
+        </div>
+        <div>
+            <label for="Pressure3pm">Pressure3pm:</label>
+            <input type="number" id="Pressure3pm" name="Pressure3pm" step="0.1">
+        </div>
+        <div>
+            <label for="Cloud9am">Cloud9am:</label>
+            <input type="number" id="Cloud9am" name="Cloud9am">
+        </div>
+        <div>
+            <label for="Cloud3pm">Cloud3pm:</label>
+            <input type="number" id="Cloud3pm" name="Cloud3pm">
+        </div>
+        <div>
+            <label for="Temp9am">Temp9am:</label>
+            <input type="number" id="Temp9am" name="Temp9am" step="0.1">
+        </div>
+        <div>
+            <label for="Temp3pm">Temp3pm:</label>
+            <input type="number" id="Temp3pm" name="Temp3pm" step="0.1">
+        </div>
+        <div>
+            <label for="RainToday">RainToday:</label>
+            <select id="RainToday" name="RainToday">
+                <option value=""></option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+        </div>
+        <button type="submit">Predict</button>
+    </form>
+    <div id="prediction-result"></div>
+</body>
+</html>
