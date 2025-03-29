@@ -6,6 +6,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.linear_model import LogisticRegression
+from xgboost import XGBClassifier
 
 NAME: str = "num-minmax-logit"
 
@@ -71,7 +72,21 @@ def city_coords():
 
 
 def make_model(coordinates=read_coords(), city_coordinates=city_coords()):
-    model =  Pipeline(steps = [
+    xgb_best_params = {'subsample': 0.8,
+                       'n_estimators': 200,
+                       'max_depth': 4,
+                       'learning_rate': 0.5,
+                       'gamma': 1,
+                       'colsample_bytree': 1.0}
+
+    model = XGBClassifier(
+        **xgb_best_params,
+        objective='binary:logistic',  # Usamos clasificación binaria
+        random_state=42,
+        n_jobs=12,
+    )
+
+    pipeline =  Pipeline(steps = [
         ("date_expander", ExpandDateTransformer()),
         ("imputer", HierarchicalImputer()),
         ("rain_today", RainTodayTransformer()),
@@ -82,7 +97,7 @@ def make_model(coordinates=read_coords(), city_coordinates=city_coords()):
         ("scaler", MinMaxScaler()),
         ("logistic_regression", LogisticRegression(class_weight={1: 0.75, 0: 0.25}, penalty= 'l2'))
     ])
-    return model
+    return pipeline
 
 def train(X, Y, model=make_model(), name=NAME):
     fitted = model.fit(X, Y)

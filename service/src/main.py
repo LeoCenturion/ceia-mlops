@@ -5,7 +5,7 @@ from model import load
 
 app = Flask(__name__, template_folder='../templates')
 xapi_bp = Blueprint('xapi', __name__, url_prefix='/xapi')
-v1api_bp = Blueprint('api', __name__, url_prefix='/api')
+v1api_bp = Blueprint('api', __name__, url_prefix='/v1')
 
 model = load()
 @v1api_bp.route("/liveness")

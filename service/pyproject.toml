@@ -19,6 +19,7 @@ flask = "^3.1.0"
 geopy = "^2.4.1"
 requests = "^2.32.3"
 pytest = "^8.3.5"
+xgboost = "^3.0.0"
 
 
 
