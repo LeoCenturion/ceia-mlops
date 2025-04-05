@@ -1,3 +1,4 @@
 /service/__pycache__/*
 /service/src/__pycache__/*
 /service/automation/__pycache__/*
+airflow/logs/*
