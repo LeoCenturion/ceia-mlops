@@ -2,3 +2,4 @@
 /service/src/__pycache__/*
 /service/automation/__pycache__/*
 airflow/logs/*
+notebooks/.ipynb_checkpoints/
