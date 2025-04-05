@@ -8,11 +8,69 @@ services:
     networks:
       - cluster
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:5000/v1/liveness"]
+      test: ["CMD", "python",  "./healthcheck.py"]
       interval: 1m30s
       timeout: 10s
       retries: 3
+  postgres:
+    restart: always
+    build: './postgres'
+    image: postgres_system
+    container_name: postgres
+    # profiles:
+    #   - mlflow
+    #   - all
+    ports:
+      - "${PG_PORT:-5433}:5433"
+    networks:
+      - cluster
+    environment:
+      - POSTGRES_USER=${PG_USER:-airflow}
+      - POSTGRES_PASSWORD=${PG_PASSWORD:-airflow}
+      - POSTGRES_DATABASE=${PG_DATABASE:-airflow}
+      - PGPORT=5433
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-p", "5433", "-U", "${PG_USER:-airflow}"]
+      interval: 60s
+      timeout: 20s
+      retries: 3
+
+  # mlflow:
+  #   restart: always
+  #   build: "./mlflow"
+  #   image: mlflow
+  #   container_name: mlflow
+  #   # profiles:
+  #   #   - mlflow
+  #   #   - all
+  #   # depends_on:
+  #   #   postgres:
+  #   #     condition: service_healthy
+  #   ports:
+  #     - "${MLFLOW_PORT:-5001}:5001"
+  #   networks:
+  #     - cluster
+  #   environment:
+  #     - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY:-minio}
+  #     - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY:-minio123}
+  #     - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
+  #   command: >
+  #     mlflow server
+  #     --backend-store-uri postgresql://${PG_USER:-airflow}:${PG_PASSWORD:-airflow}@postgres:5433/mlflow_db
+  #     --host 0.0.0.0
+  #     --default-artifact-root s3://${MLFLOW_BUCKET_NAME:-mlflow}/
+  #   # healthcheck:
+  #   #   test: wget --no-verbose --tries=1 --spider http://mlflow:5000 || exit 1
+  #   #   interval: 60s
+  #   #   timeout: 10s
+  #   #   retries: 3
 
 networks:
   cluster:
     driver: bridge
+
+volumes:
+  db_data:
+  minio_data:

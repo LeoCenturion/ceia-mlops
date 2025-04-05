@@ -9,7 +9,7 @@ COPY ./src/ ./src/
 COPY ./data ./data
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
-
+COPY ./healthcheck.py ./healthcheck.py
 
 RUN poetry install
 RUN mkdir ./cache
