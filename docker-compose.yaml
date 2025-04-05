@@ -56,7 +56,7 @@ services:
       - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY:-minio}
       - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY:-minio123}
       - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
-    mcommand: >
+    command: >
       mlflow server
       --backend-store-uri postgresql://${PG_USER:-airflow}:${PG_PASSWORD:-airflow}@postgres:5433/mlflow_db
       --host 0.0.0.0
