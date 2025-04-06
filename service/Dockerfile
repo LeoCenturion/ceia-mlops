@@ -7,6 +7,7 @@ RUN curl -sSL https://install.python-poetry.org | python3 -
 RUN pip install poetry
 COPY ./src/ ./src/
 COPY ./data ./data
+COPY ./templates ./templates
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 COPY ./healthcheck.py ./healthcheck.py
