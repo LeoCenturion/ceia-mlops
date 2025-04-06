@@ -1,106 +1,149 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Weather Prediction</title>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <meta charset="UTF-8">
+  <title>Australia Weather Prediction</title>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f4f7f8;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+    }
+    .form-section {
+      flex: 0 0 40%;
+      padding: 20px;
+    }
+    .map-section {
+      flex: 0 0 60%;
+      position: relative;
+    }
+    /* El contenedor del mapa debe tener una altura definida */
+    #map {
+      height: 100%;
+      width: 100%;
+      min-height: 500px;
+    }
+    h1 {
+      text-align: center;
+      color: #0077b6;
+      margin-bottom: 20px;
+    }
+    form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+    form div {
+      display: flex;
+      flex-direction: column;
+    }
+    form label {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+    form input, form select {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 100%;
+    }
+    button {
+      grid-column: 1 / -1;
+      padding: 12px;
+      background-color: #0077b6;
+      color: #fff;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #005f87;
+    }
+    #prediction-result {
+      margin-top: 30px;
+      text-align: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #023e8a;
+    }
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      .form-section, .map-section {
+        flex: 1 1 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Predict Rainfall</h1>
-    <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML">
+  <div class="container">
+    <!-- Sección del formulario (izquierda) -->
+    <div class="form-section">
+      <h1>Australia Weather Prediction</h1>
+      <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML">
         <div>
-            <label for="Date">Date:</label>
-            <input type="date" id="Date" name="Date">
+          <label for="Date">Date:</label>
+          <input type="date" id="Date" name="Date">
         </div>
         <div>
-            <label for="Location">Location:</label>
-            <input type="text" id="Location" name="Location">
+          <label for="Location">Location:</label>
+          <!-- Desplegable con localidades de Australia -->
+          <select id="Location" name="Location">
+            <option value="">Select a city</option>
+            <option value="Sydney">Sydney</option>
+            <option value="Melbourne">Melbourne</option>
+            <option value="Brisbane">Brisbane</option>
+            <option value="Perth">Perth</option>
+            <option value="Adelaide">Adelaide</option>
+            <option value="Canberra">Canberra</option>
+            <option value="Hobart">Hobart</option>
+            <option value="Darwin">Darwin</option>
+            <option value="Gold Coast">Gold Coast</option>
+            <option value="Newcastle">Newcastle</option>
+          </select>
         </div>
-        <div>
-            <label for="MinTemp">MinTemp:</label>
-            <input type="number" id="MinTemp" name="MinTemp" step="0.1">
+        <div style="grid-column: 1 / -1; text-align: center;">
+          <button type="submit">Predict Weather</button>
         </div>
-        <div>
-            <label for="MaxTemp">MaxTemp:</label>
-            <input type="number" id="MaxTemp" name="MaxTemp" step="0.1">
-        </div>
-        <div>
-            <label for="Rainfall">Rainfall:</label>
-            <input type="number" id="Rainfall" name="Rainfall" step="0.1">
-        </div>
-        <div>
-            <label for="Evaporation">Evaporation:</label>
-            <input type="number" id="Evaporation" name="Evaporation" step="0.1">
-        </div>
-        <div>
-            <label for="Sunshine">Sunshine:</label>
-            <input type="number" id="Sunshine" name="Sunshine" step="0.1">
-        </div>
-        <div>
-            <label for="WindGustDir">WindGustDir:</label>
-            <input type="text" id="WindGustDir" name="WindGustDir">
-        </div>
-        <div>
-            <label for="WindGustSpeed">WindGustSpeed:</label>
-            <input type="number" id="WindGustSpeed" name="WindGustSpeed">
-        </div>
-        <div>
-            <label for="WindDir9am">WindDir9am:</label>
-            <input type="text" id="WindDir9am" name="WindDir9am">
-        </div>
-        <div>
-            <label for="WindDir3pm">WindDir3pm:</label>
-            <input type="text" id="WindDir3pm" name="WindDir3pm">
-        </div>
-        <div>
-            <label for="WindSpeed9am">WindSpeed9am:</label>
-            <input type="number" id="WindSpeed9am" name="WindSpeed9am">
-        </div>
-        <div>
-            <label for="WindSpeed3pm">WindSpeed3pm:</label>
-            <input type="number" id="WindSpeed3pm" name="WindSpeed3pm">
-        </div>
-        <div>
-            <label for="Humidity9am">Humidity9am:</label>
-            <input type="number" id="Humidity9am" name="Humidity9am">
-        </div>
-        <div>
-            <label for="Humidity3pm">Humidity3pm:</label>
-            <input type="number" id="Humidity3pm" name="Humidity3pm">
-        </div>
-        <div>
-            <label for="Pressure9am">Pressure9am:</label>
-            <input type="number" id="Pressure9am" name="Pressure9am" step="0.1">
-        </div>
-        <div>
-            <label for="Pressure3pm">Pressure3pm:</label>
-            <input type="number" id="Pressure3pm" name="Pressure3pm" step="0.1">
-        </div>
-        <div>
-            <label for="Cloud9am">Cloud9am:</label>
-            <input type="number" id="Cloud9am" name="Cloud9am">
-        </div>
-        <div>
-            <label for="Cloud3pm">Cloud3pm:</label>
-            <input type="number" id="Cloud3pm" name="Cloud3pm">
-        </div>
-        <div>
-            <label for="Temp9am">Temp9am:</label>
-            <input type="number" id="Temp9am" name="Temp9am" step="0.1">
-        </div>
-        <div>
-            <label for="Temp3pm">Temp3pm:</label>
-            <input type="number" id="Temp3pm" name="Temp3pm" step="0.1">
-        </div>
-        <div>
-            <label for="RainToday">RainToday:</label>
-            <select id="RainToday" name="RainToday">
-                <option value=""></option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
-            </select>
-        </div>
-        <button type="submit">Predict</button>
-    </form>
-    <div id="prediction-result"></div>
+      </form>
+      <div id="prediction-result"></div>
+    </div>
+    <!-- Sección del mapa (derecha) -->
+    <div class="map-section">
+      <div id="map"></div>
+    </div>
+  </div>
+
+  <!-- Inicialización del mapa con Leaflet, centrado en Australia -->
+  <script>
+    var map = L.map('map').setView([-25, 133], 4);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+  </script>
 </body>
 </html>
+
