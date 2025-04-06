@@ -23,7 +23,9 @@ def predict():
         req_data = request.get_json()
         # Convert to DataFrame
         X = pd.DataFrame(req_data)
-
+        """
+        Agregar codidgo para filtrar el dataframe a partir de la Fecha  y la locacion 
+        """
         # Ensure correct feature columns
         expected_columns = ['Date', 'Location', 'MinTemp', 'MaxTemp', 'Rainfall', 'Evaporation', 'Sunshine',
                             'WindGustDir', 'WindGustSpeed', 'WindDir9am', 'WindDir3pm', 'WindSpeed9am',
