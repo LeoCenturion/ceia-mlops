@@ -78,4 +78,3 @@ def index():
 
 app.register_blueprint(xapi_bp)
 app.register_blueprint(v1api_bp)
-
