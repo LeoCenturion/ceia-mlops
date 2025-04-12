@@ -1,13 +1,13 @@
 from pandas.core.arraylike import default_array_ufunc
 import requests
 
-def adapt_weather_data(weather_response):
+def adapt_weather_data(weather_response, city):
     """
     Adapts the weather response to the specified schema.
     """
     adapted_data = {
         "Date": weather_response.get("LocalObservationDateTime", "").split("T")[0],
-        "Location": "Albury",  # Assuming location is always Albury
+        "Location": city,  # Assuming location is always Albury
         "MinTemp": weather_response.get("TemperatureSummary", {}).get("Past24HourRange", {}).get("Minimum", {}).get("Metric", {}).get("Value"),
         "MaxTemp": weather_response.get("TemperatureSummary", {}).get("Past24HourRange", {}).get("Maximum", {}).get("Metric", {}).get("Value"),
         "Rainfall": weather_response.get("PrecipitationSummary", {}).get("Precipitation", {}).get("Metric", {}).get("Value"),
@@ -53,7 +53,7 @@ class WeatherGateway():
             raise Exception(f"Error: {response.status_code}")
         return key
 
-    def get_current_weather_details(self, lat, lon):
+    def get_current_weather_details(self, lat, lon, city):
         key = self.get_location_key(lat, lon)
         url = f"{self.base_url}/currentconditions/v1/{key}"
         params = {
@@ -63,7 +63,7 @@ class WeatherGateway():
         response = requests.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
-            return adapt_weather_data(data[0])
+            return adapt_weather_data(data[0], city)
         else:
             raise Exception(f"Error: {response.status_code}")
 

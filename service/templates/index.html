@@ -7,94 +7,128 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <!-- Inicialización del mapa con Leaflet usando un estilo de mapa más limpio (CartoDB Positron) -->
+  <script>
+   function handleResponse(event) {
+       if (event.detail.successful) {
+           const responseData = event.detail.xhr.responseText;
+           try {
+               var selectedCity = document.getElementById("Location").value;
+               if (selectedCity && cityCoords[selectedCity]) {
+                   var coords = cityCoords[selectedCity];
+                   // Centra el mapa en las coordenadas de la ciudad con zoom 12
+                   map.setView(coords, 12);
+                   // Elimina el marcador previo si existe para no duplicarlo
+                   if (cityMarker) {
+                       map.removeLayer(cityMarker);
+                   }
+                   // Selecciona un icono al azar y agrega el marcador al mapa
+                   var randomIcon = rainIcon;
+                   if (responseData.includes('No Rain')) {
+                       randomIcon = sunnyIcon
+                   }
+                   cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
+               }
+
+           } catch (error) {
+               // Handle non-JSON responses or parsing errors
+               console.log("Response Data:", responseData);
+               console.log("Response error:", error);
+           }
+       } else {
+           console.error("Request failed:", event.detail.xhr);
+           document.getElementById("result").innerHTML = "Error processing data.";
+       }
+   }
+  </script>
   <style>
-    body {
-      font-family: 'Roboto', sans-serif;
-      background-color: #f4f7f8;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 1200px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: row;
-      gap: 20px;
-    }
-    .form-section {
-      flex: 0 0 40%;
-      padding: 20px;
-    }
-    .map-section {
-      flex: 0 0 60%;
-      position: relative;
-    }
-    /* El contenedor del mapa debe tener una altura definida */
-    #map {
-      height: 100%;
-      width: 100%;
-      min-height: 500px;
-    }
-    h1 {
-      text-align: center;
-      color: #0077b6;
-      margin-bottom: 20px;
-    }
-    form {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-    form div {
-      display: flex;
-      flex-direction: column;
-    }
-    form label {
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-    form input, form select {
-      padding: 10px;
-      font-size: 16px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      width: 100%;
-    }
-    button {
-      grid-column: 1 / -1;
-      padding: 12px;
-      background-color: #0077b6;
-      color: #fff;
-      font-weight: bold;
-      border: none;
-      border-radius: 6px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 10px;
-    }
-    button:hover {
-      background-color: #005f87;
-    }
-    #prediction-result {
-      margin-top: 30px;
-      text-align: center;
-      font-size: 1.2em;
-      font-weight: bold;
-      color: #023e8a;
-    }
-    @media (max-width: 768px) {
-      .container {
-        flex-direction: column;
-      }
-      .form-section, .map-section {
-        flex: 1 1 100%;
-      }
-    }
+   body {
+       font-family: 'Roboto', sans-serif;
+       background-color: #f4f7f8;
+       margin: 0;
+       padding: 20px;
+   }
+   .container {
+       max-width: 1200px;
+       margin: auto;
+       background: #fff;
+       padding: 30px;
+       border-radius: 12px;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+       display: flex;
+       flex-direction: row;
+       gap: 20px;
+   }
+   .form-section {
+       flex: 0 0 40%;
+       padding: 20px;
+   }
+   .map-section {
+       flex: 0 0 60%;
+       position: relative;
+   }
+   /* El contenedor del mapa debe tener una altura definida */
+   #map {
+       height: 100%;
+       width: 100%;
+       min-height: 500px;
+   }
+   h1 {
+       text-align: center;
+       color: #0077b6;
+       margin-bottom: 20px;
+   }
+   form {
+       display: grid;
+       grid-template-columns: 1fr 1fr;
+       gap: 15px;
+   }
+   form div {
+       display: flex;
+       flex-direction: column;
+   }
+   form label {
+       font-weight: bold;
+       margin-bottom: 5px;
+   }
+   form input, form select {
+       padding: 10px;
+       font-size: 16px;
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       width: 100%;
+   }
+   button {
+       grid-column: 1 / -1;
+       padding: 12px;
+       background-color: #0077b6;
+       color: #fff;
+       font-weight: bold;
+       border: none;
+       border-radius: 6px;
+       font-size: 18px;
+       cursor: pointer;
+       transition: background-color 0.3s ease;
+       margin-top: 10px;
+   }
+   button:hover {
+       background-color: #005f87;
+   }
+   #prediction-result {
+       margin-top: 30px;
+       text-align: center;
+       font-size: 1.2em;
+       font-weight: bold;
+       color: #023e8a;
+   }
+   @media (max-width: 768px) {
+       .container {
+           flex-direction: column;
+       }
+       .form-section, .map-section {
+           flex: 1 1 100%;
+       }
+   }
   </style>
 </head>
 <body>
@@ -102,7 +136,7 @@
     <!-- Sección del formulario (izquierda) -->
     <div class="form-section">
       <h1>Australia Weather Prediction</h1>
-      <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML">
+      <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML", hx-on::after-request="handleResponse(event)">
         <div>
           <label for="Date">Date:</label>
           <input type="date" id="Date" name="Date">
@@ -132,73 +166,71 @@
     </div>
     <!-- Sección del mapa (derecha) -->
     <div class="map-section">
-      <div id="map"></div>
+        <div id="map"></div>
     </div>
   </div>
-
-  <!-- Inicialización del mapa con Leaflet usando un estilo de mapa más limpio (CartoDB Positron) -->
-  <script>
-    // Inicializa el mapa centrado en Australia
-    var map = L.map('map').setView([-25, 133], 4);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-      maxZoom: 19
-    }).addTo(map);
-
-    // Diccionario con las coordenadas aproximadas de cada ciudad
-    var cityCoords = {
-      "Sydney": [-33.8688, 151.2093],
-      "Melbourne": [-37.8136, 144.9631],
-      "Brisbane": [-27.4698, 153.0251],
-      "Perth": [-31.9505, 115.8605],
-      "Adelaide": [-34.9285, 138.6007],
-      "Canberra": [-35.2809, 149.1300],
-      "Hobart": [-42.8821, 147.3272],
-      "Darwin": [-12.4634, 130.8456],
-      "Gold Coast": [-28.0167, 153.4000],
-      "Newcastle": [-32.9283, 151.7817]
-    };
-
-    // Definición de los nuevos iconos (usando imágenes de icons8)
-    var sunnyIcon = L.icon({
-      iconUrl: 'https://img.icons8.com/color/48/000000/sun.png',
-      iconSize: [48, 48],
-      iconAnchor: [24, 48]
-    });
-
-    var rainIcon = L.icon({
-      iconUrl: 'https://img.icons8.com/color/48/000000/rain.png',
-      iconSize: [48, 48],
-      iconAnchor: [24, 48]
-    });
-
-    // Variable para almacenar el marcador actual, en caso de que ya exista
-    var cityMarker;
-
-    // Función para seleccionar al azar uno de los iconos
-    function getRandomIcon() {
-      var icons = [sunnyIcon, rainIcon];
-      return icons[Math.floor(Math.random() * icons.length)];
-    }
-
-    // Listener para el evento "submit" del formulario
-    document.querySelector("form").addEventListener("submit", function(event) {
-      // Obtiene la ciudad seleccionada
-      var selectedCity = document.getElementById("Location").value;
-      if (selectedCity && cityCoords[selectedCity]) {
-        var coords = cityCoords[selectedCity];
-        // Centra el mapa en las coordenadas de la ciudad con zoom 12
-        map.setView(coords, 12);
-        // Elimina el marcador previo si existe para no duplicarlo
-        if (cityMarker) {
-          map.removeLayer(cityMarker);
-        }
-        // Selecciona un icono al azar y agrega el marcador al mapa
-        var randomIcon = getRandomIcon();
-        cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
-      }
-      // HTMX se encarga del envío del formulario, por lo que no se invoca event.preventDefault()
-    });
-  </script>
 </body>
+<script>
+ // Inicializa el mapa centrado en Australia
+ var map = L.map('map').setView([-25, 133], 4);
+ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+     maxZoom: 19
+ }).addTo(map);
+
+ // Diccionario con las coordenadas aproximadas de cada ciudad
+ var cityCoords = {
+     "Sydney": [-33.8688, 151.2093],
+     "Melbourne": [-37.8136, 144.9631],
+     "Brisbane": [-27.4698, 153.0251],
+     "Perth": [-31.9505, 115.8605],
+     "Adelaide": [-34.9285, 138.6007],
+     "Canberra": [-35.2809, 149.1300],
+     "Hobart": [-42.8821, 147.3272],
+     "Darwin": [-12.4634, 130.8456],
+     "Gold Coast": [-28.0167, 153.4000],
+     "Newcastle": [-32.9283, 151.7817]
+ };
+
+ // Definición de los nuevos iconos (usando imágenes de icons8)
+ var sunnyIcon = L.icon({
+     iconUrl: 'https://img.icons8.com/color/48/000000/sun.png',
+     iconSize: [48, 48],
+     iconAnchor: [24, 48]
+ });
+
+ var rainIcon = L.icon({
+     iconUrl: 'https://img.icons8.com/color/48/000000/rain.png',
+     iconSize: [48, 48],
+     iconAnchor: [24, 48]
+ });
+
+ // Variable para almacenar el marcador actual, en caso de que ya exista
+ var cityMarker;
+
+ // Función para seleccionar al azar uno de los iconos
+ function getRandomIcon() {
+     var icons = [sunnyIcon, rainIcon];
+     return icons[Math.floor(Math.random() * icons.length)];
+ }
+
+ // Listener para el evento "submit" del formulario
+ document.querySelector("form").addEventListener("submit", function(event) {
+     // Obtiene la ciudad seleccionada
+     var selectedCity = document.getElementById("Location").value;
+     if (selectedCity && cityCoords[selectedCity]) {
+         var coords = cityCoords[selectedCity];
+         // Centra el mapa en las coordenadas de la ciudad con zoom 12
+         map.setView(coords, 12);
+         // Elimina el marcador previo si existe para no duplicarlo
+         if (cityMarker) {
+             map.removeLayer(cityMarker);
+         }
+         // Selecciona un icono al azar y agrega el marcador al mapa
+         var randomIcon = getRandomIcon();
+         cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
+     }
+     // HTMX se encarga del envío del formulario, por lo que no se invoca event.preventDefault()
+ });
+</script>
 </html>
