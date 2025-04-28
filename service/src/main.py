@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Blueprint, render_template
 import pandas as pd
 from model import load, read_coords
 from weather_gateway import WeatherGateway
+from datetime import date
 
 # is this a hardcoded api key on a public repository? yes, yes it is. Don't think about it.
 ACCUWEATHER_KEY="A8G9Cp9ipeF5CqW4zQcxEqA73fNuYkt0"
@@ -56,7 +57,37 @@ def predict():
     city_name = request.form.to_dict()['Location']
     coords = read_coords().set_index('city_ascii')
     city = coords.loc[city_name]
-    weather_data = wg.get_current_weather_details(city['lat'], city['lng'])
+    print(city)
+    weather_data = None
+    try:
+        weather_data = wg.get_current_weather_details(city['lat'], city['lng'], city_name)
+    except Exception:
+        today = date.today()
+        formatted_date = today.strftime("%Y-%m-%d")
+        weather_data = {
+        "Date": formatted_date,
+        "Location": city_name,
+        "MinTemp": None,
+        "MaxTemp": None,
+        "Rainfall": None,
+        "Evaporation": None,
+        "Sunshine": None,
+        "WindGustDir": None,
+        "WindGustSpeed": None,
+        "WindDir9am": None,
+        "WindDir3pm": None,
+        "WindSpeed9am": None,
+        "WindSpeed3pm": None,
+        "Humidity9am": None,
+        "Humidity3pm": None,
+        "Pressure9am": None,
+        "Pressure3pm": None,
+        "Cloud9am": None,
+        "Cloud3pm": None,
+        "Temp9am": None,
+        "Temp3pm": None,
+        "RainToday": None
+    }
 
     try:
         X = pd.DataFrame([weather_data])
