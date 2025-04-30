@@ -1,9 +1,10 @@
 from flask import Flask, request, jsonify, Blueprint, render_template
 import pandas as pd
-from model import Model
-from weather_gateway import WeatherGateway
+from src.model import Model
+from src.weather_gateway import WeatherGateway
 from datetime import date
-from persistence.pickle_repository import PickleRepository
+from src.persistence.pickle_repository import PickleRepository
+from src.persistence.mlflow_repository import MlflowRepository
 
 # is this a hardcoded api key on a public repository? yes, yes it is. Don't think about it.
 ACCUWEATHER_KEY = "A8G9Cp9ipeF5CqW4zQcxEqA73fNuYkt0"
@@ -12,9 +13,9 @@ app = Flask(__name__, template_folder='../templates')
 xapi_bp = Blueprint('xapi', __name__, url_prefix='/xapi')
 v1api_bp = Blueprint('api', __name__, url_prefix='/v1')
 wg = WeatherGateway(ACCUWEATHER_KEY)
-persistence = PickleRepository()
+persistence = MlflowRepository("http://localhost:5001")
 model = Model(persistence)
-
+model.load()
 
 @v1api_bp.route("/liveness")
 def liveness():
@@ -39,7 +40,7 @@ def predict():
         X = X[expected_columns]
 
         # Make predictions
-        y_pred = model.make_model().predict(X)
+        y_pred = model.load().predict(X)
         return jsonify({"predictions": y_pred.tolist()})
     except Exception as e:
         return jsonify({"error": str(e)}), 400
@@ -103,7 +104,7 @@ def predict():
                             'Cloud9am', 'Cloud3pm', 'Temp9am', 'Temp3pm', 'RainToday']
         X = X[expected_columns]
 
-        y_pred = model.make_model().predict(X)
+        y_pred = model.load().predict(X)
         return render_template('prediction.html', prediction=y_pred)
     except Exception as e:
         return f"Error calling prediction API: {e}", 500

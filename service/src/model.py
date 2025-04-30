@@ -16,6 +16,7 @@ class Model:
     def __init__(self, persistence: ModelRepository):
         self.name: str = NAME
         self.persistence: ModelRepository = persistence
+        self.trained_model = None
 
     def read_coords(self) -> pd.DataFrame:
         coordinates: pd.DataFrame = pd.read_csv("./data/worldcities.csv")
@@ -128,7 +129,10 @@ class Model:
             model = self.make_model()
         if name is None:
             name = self.name
-        return self.persistence.load(name=name)
+        if self.trained_model is None:
+            self.trained_model = self.persistence.load(name=name)
+
+        return self.trained_model
 
 # if __name__=="__main__":
 #     rains = pd.read_csv('./data/weatherAUS.csv')
