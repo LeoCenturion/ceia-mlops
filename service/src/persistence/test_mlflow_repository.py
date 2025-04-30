@@ -8,6 +8,7 @@ from .mlflow_repository import MlflowRepository
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
+import sklearn
 
 class TestMlflowRepository(unittest.TestCase):
     def setUp(self):
@@ -51,8 +52,10 @@ class TestMlflowRepository(unittest.TestCase):
 
         # Assert that the loaded model is the same as the original model
         print(type(loaded_model))
-        self.assertIsInstance(loaded_model, mlflow.pyfunc.PyFuncModel)
-        
+        self.assertIsInstance(loaded_model, sklearn.linear_model._logistic.LogisticRegression)
+
+        pred = loaded_model.predict(self.X_test)
+        self.assertListEqual(pred.tolist(), self.y_pred.tolist())
 
     # def tearDown(self):
     #     # Clean up the MLflow experiment after the test

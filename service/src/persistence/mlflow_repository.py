@@ -12,14 +12,14 @@ class MlflowRepository(ModelRepository):
         self.tracking_uri = tracking_uri
 
     def model_uri(self, name, version):
-        return f"models:/{name}/Staging"
+        return f"models:/{name}/{version}"
 
     def load(self, name=DEFAULT_NAME, version="1.0.0"):
         try:
             mlflow.set_tracking_uri(self.tracking_uri)
             model_uri = self.model_uri(name,version)
 
-            loaded_model = mlflow.pyfunc.load_model(f"models:/{name}/2")
+            loaded_model = mlflow.sklearn.load_model(f"models:/{name}/latest")
             return loaded_model
         except Exception as e:
             print(f"Error loading model from MLflow: {e}")
