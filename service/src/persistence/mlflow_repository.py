@@ -1,19 +1,25 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 import mlflow
+from pandas import Series
 from sklearn.base import BaseEstimator, ClassifierMixin
 from . import ModelRepository
+from mlflow.models import infer_signature
 
 DEFAULT_NAME = "rain-predictor"
 
 class MlflowRepository(ModelRepository):
-    def load(self, name=DEFAULT_NAME):
-        try:
-            # Assuming "prod" tag, you might need to adjust based on your MLflow setup.
-            mlflow.set_tracking_uri("http://your-mlflow-server:5000")
-            stage = "Production" #or Staging, or None, or Archived.
-            model_uri = f"models:/{name}/{stage}"
+    def __init__(self, tracking_uri="http://your-mlflow-server:5000"):
+        self.tracking_uri = tracking_uri
 
-            loaded_model = mlflow.pyfunc.load_model(model_uri)
+    def model_uri(self, name, version):
+        return f"models:/{name}/Staging"
+
+    def load(self, name=DEFAULT_NAME, version="1.0.0"):
+        try:
+            mlflow.set_tracking_uri(self.tracking_uri)
+            model_uri = self.model_uri(name,version)
+
+            loaded_model = mlflow.pyfunc.load_model(f"models:/{name}/2")
             return loaded_model
         except Exception as e:
             print(f"Error loading model from MLflow: {e}")
@@ -23,19 +29,22 @@ class MlflowRepository(ModelRepository):
     def save(
         self,
         model: ClassifierMixin,
+        # signature: Tuple[Series, Series],
         name=DEFAULT_NAME,
+        version="1.0.0",
         metrics: Dict[str,float] = {},
         params: Dict[str,Any] = {},
-        scores: Dict[str,float] = {}
+        scores: Dict[str,float] = {},
     ) -> None:
-        mlflow.set_tracking_uri("http://your-mlflow-server:5000") 
         with mlflow.start_run():
-            for k,v in params:
+            mlflow.set_tracking_uri(self.tracking_uri)
+            for k,v in params.items():
                 mlflow.log_param(k, v)
-            for k,v in metrics:
+            for k,v in metrics.items():
                 mlflow.log_metric(k, v)
-            mlflow.sklearn.log_model(model, name)
-            for k,v in scores:
+            model_uri = self.model_uri(name, version)
+            mlflow.sklearn.log_model(model, name, registered_model_name=name, signature=False)
+            for k,v in scores.items():
                 mlflow.log_metric(k, v)
 
 

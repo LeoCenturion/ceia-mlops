@@ -1,5 +1,9 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="automation/.env")
 
 BASE_URL = "http://127.0.0.1:5000/v1"
 
