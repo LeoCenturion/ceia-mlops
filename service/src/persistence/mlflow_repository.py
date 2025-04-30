@@ -42,7 +42,6 @@ class MlflowRepository(ModelRepository):
                 mlflow.log_param(k, v)
             for k,v in metrics.items():
                 mlflow.log_metric(k, v)
-            model_uri = self.model_uri(name, version)
             mlflow.sklearn.log_model(model, name, registered_model_name=name, signature=False)
             for k,v in scores.items():
                 mlflow.log_metric(k, v)
