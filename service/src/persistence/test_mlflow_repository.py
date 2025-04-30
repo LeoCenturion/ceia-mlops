@@ -15,7 +15,7 @@ class TestMlflowRepository(unittest.TestCase):
         load_dotenv(dotenv_path=".env")
 
         self.tracking_uri = "http://localhost:5001"
-        mlflow.set_tracking_uri(self.tracking_uri)
+        # mlflow.set_tracking_uri(self.tracking_uri)
         self.repo = MlflowRepository(tracking_uri=self.tracking_uri)
         self.model_name = "test-model"
 
@@ -36,14 +36,13 @@ class TestMlflowRepository(unittest.TestCase):
         self.repo.save(
             model=self.model,
             name=self.model_name,
-            version="1.0.0",
             metrics=self.metrics,
             params=self.params,
             scores=self.scores,
         )
 
 
-        loaded_model = self.repo.load(name=self.model_name, version="1.0.0")
+        loaded_model = self.repo.load(name=self.model_name, version="latest")
 
         self.assertIsNotNone(loaded_model)
         self.assertIsInstance(loaded_model, sklearn.linear_model._logistic.LogisticRegression)
