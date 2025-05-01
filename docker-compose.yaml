@@ -12,6 +12,21 @@ services:
       interval: 1m30s
       timeout: 10s
       retries: 3
+  rain-predictor-trainer:
+    build: './service/'
+    image: rain-predictor
+    networks:
+      - cluster
+    # depends_on:
+    #   mlflow:
+    #     condition: service_healthy
+      # minio-bucket-init:
+      #   condition: service_completed_successfully
+    environment:
+      - AWS_ACCESS_KEY_ID=${MINIO_ACCESS_KEY:-minio}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_SECRET_ACCESS_KEY:-minio123}
+      - MLFLOW_S3_ENDPOINT_URL=http://s3:9000
+    command: run python -m src.scripts.train_model
   postgres:
     restart: always
     build: './postgres'
