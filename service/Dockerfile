@@ -11,7 +11,6 @@ COPY ./templates ./templates
 COPY pyproject.toml pyproject.toml
 COPY poetry.lock poetry.lock
 COPY ./healthcheck.py ./healthcheck.py
-COPY ./scripts ./scripts
 
 RUN poetry install
 RUN mkdir ./cache

@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify, Blueprint, render_template
 import pandas as pd
 from src.model import Model
@@ -13,7 +14,9 @@ app = Flask(__name__, template_folder='../templates')
 xapi_bp = Blueprint('xapi', __name__, url_prefix='/xapi')
 v1api_bp = Blueprint('api', __name__, url_prefix='/v1')
 wg = WeatherGateway(ACCUWEATHER_KEY)
-persistence = MlflowRepository("http://localhost:5001")
+mlflow_url = os.getenv("MLFLOW_URL", "http://localhost:5001")
+
+persistence = MlflowRepository(mlflow_url)
 model = Model(persistence)
 model.load()
 
