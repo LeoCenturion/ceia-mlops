@@ -199,6 +199,9 @@ def process_eltl_ria():
         from sklearn.pipeline import Pipeline
         from sklearn.preprocessing import MinMaxScaler
 
+        import tempfile
+        import pickle
+
         # Agregar el directorio de la librería a sys.path
         # import sys
         # import os
@@ -262,21 +265,14 @@ def process_eltl_ria():
         wr.s3.to_csv(df=X_train_transformed_df, path=f"{output_prefix}X_train_transformed.csv", index=False)
         wr.s3.to_csv(df=X_test_transformed_df, path=f"{output_prefix}X_test_transformed.csv", index=False)
         logger.info("Dataset features transform successfully finished")
-
-    # import tempfile
-    # import os
-    # import pickle
     
-    # with tempfile.NamedTemporaryFile(suffix='.pkl', delete=False) as tmp:
-    #     pickle.dump(prepro_pipeline, tmp)
-    #     local_pickle_path = tmp.name
+        with tempfile.NamedTemporaryFile(suffix='.pkl', delete=False) as tmp:
+            pickle.dump(prepro_pipeline, tmp)
+            local_pickle_path = tmp.name
 
-    # # Subir el pickle a S3
-    # s3_pickle_path = s3_data_path + 'Modelos/prepro_pipeline.pkl'
-    # wr.s3.upload(local_pickle_path, s3_pickle_path)
-
-    # # Opcional: eliminar el archivo temporal si ya se subió
-    # os.remove(local_pickle_path)
+        # Subir el pickle a S3
+        s3_pickle_path = output_prefix + '/prepro_pipeline.pkl'
+        wr.s3.upload(local_pickle_path, s3_pickle_path)
 
     # -----------------------------------------
     # WORKFLOW
