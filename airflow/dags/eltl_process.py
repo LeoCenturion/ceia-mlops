@@ -271,7 +271,7 @@ def process_eltl_ria():
             local_pickle_path = tmp.name
 
         # Subir el pickle a S3
-        s3_pickle_path = output_prefix + '/prepro_pipeline.pkl'
+        s3_pickle_path = output_prefix + 'prepro_pipeline.pkl'
         wr.s3.upload(local_pickle_path, s3_pickle_path)
 
     # -----------------------------------------
