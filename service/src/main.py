@@ -14,7 +14,7 @@ app = Flask(__name__, template_folder='../templates')
 xapi_bp = Blueprint('xapi', __name__, url_prefix='/xapi')
 v1api_bp = Blueprint('api', __name__, url_prefix='/v1')
 wg = WeatherGateway(ACCUWEATHER_KEY)
-mlflow_url = os.getenv("MLFLOW_URL", "http://localhost:5001")
+mlflow_url = os.getenv("MLFLOW_URL")
 
 persistence = MlflowRepository(mlflow_url)
 model = Model(persistence)
