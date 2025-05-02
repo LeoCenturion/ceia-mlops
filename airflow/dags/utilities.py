@@ -1,9 +1,7 @@
 import io
 import boto3
 
-s3_data_path = "s3://data/"  # Asegúrate que este path esté correcto y tenga permisos
-
-def download_data(url, filename):
+def download_data(url):
     import requests
     import zipfile
 
@@ -29,7 +27,7 @@ def download_data(url, filename):
             for file_info in zip_file.infolist():
                 with zip_file.open(file_info) as file:
                     data_bytes = file.read()
-                    key = f"{file_info.filename}"
+                    key = f"RawData/{file_info.filename}"
 
                     # Subir datos en memoria usando boto3
                     s3.put_object(Bucket='data', Key=key, Body=data_bytes)
@@ -43,3 +41,25 @@ def download_data(url, filename):
         print(status[-1])
 
     return status
+
+
+from geopy.geocoders import Nominatim   # For GEO coords
+import re                               # For string manipulation
+
+def get_geocoord(place):
+    'Función para obtener la latitud y longitud de un lugar "place" en Australia'
+            
+    country = 'Australia'
+    # Divide las palabras (en caso de que sea necesario)
+    place = re.sub(r'([a-z])([A-Z])', r'\1 \2', place)
+            
+    # Crear un objeto geolocalizador
+    geolocator = Nominatim(user_agent="myGeocoder")
+            
+    location = f"{place}, {country}"
+    location_info = geolocator.geocode(location)
+            
+    if location_info:
+        return (location_info.latitude, location_info.longitude)
+    else:
+        return (None, None)
