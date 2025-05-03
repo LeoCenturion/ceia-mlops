@@ -120,10 +120,12 @@ El presente proyecto involucra los siguientes servicios y herramientas:
 ![prepro_pipeline](figures/prepro_pipeline.jpg "Flask")
 
 2. Model Experimentation Process
-   - 
+   
+   COMPLETAR
 
 3. Production Process
-   - 
+   
+   COMPLETAR
 
 ## Corriendo el servicio
 
@@ -194,9 +196,7 @@ Una vez finalizado, se deberían visualizar los archivos en MinIO.
 
 ### Step 3: Model training
 
-Ejecuta el notebook entero dentro de la carpeta ./notebooks para realizar el entrenamiento del modelo. Si no realizaste los puntos 6 y 7, desde el notebook podes ejecutar el ETL en airflow (primera celda de código).
-
-Podrás visualizar en MLflow el modelo entrenado, junto con sus métricas más importantes, así como en MinIO.
+COMPLETAR
 
 
 ### Step 4: Rain predictor
