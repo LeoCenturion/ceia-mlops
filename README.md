@@ -123,7 +123,7 @@ El presente proyecto involucra los siguientes servicios y herramientas:
    
    - Se define un modelo XGBoost Classifier y se lleva a cabo una búsqueda de hiper-párámetros usando GridSearch, utilizando el *accuracy* como métrica de evaluación. Se guarda el mejor modelo.
 
-   - Se entre al mejor modelo que resulto del paso anterior.
+   - Se entrena al mejor modelo que resulto del paso anterior.
 
 3. Production Process
    
