@@ -14,6 +14,7 @@ COPY ./healthcheck.py ./healthcheck.py
 
 RUN poetry install
 RUN mkdir ./cache
-RUN poetry run python ./src/model.py
+# RUN poetry run python ./src/model.py
+# RUN poetry run python -m src.scripts.train_model
 ENTRYPOINT ["poetry"]
 CMD ["run", "python", "-m", "flask", "--app", "./src/main.py", "run", "--host=0.0.0.0"]

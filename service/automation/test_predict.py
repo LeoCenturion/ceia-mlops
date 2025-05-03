@@ -1,5 +1,9 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
+
+load_dotenv(dotenv_path="automation/.env")
 
 BASE_URL = "http://127.0.0.1:5000/v1"
 
@@ -33,10 +37,9 @@ test_data = [
 
 def test_predict_endpoint_returns_expected_format():
     """
-    Checks expected return format
+     Checks expected return format
     """
     response = requests.post(f"{BASE_URL}/predict", json=test_data)
-
 
     assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
     response_json = response.json()
@@ -49,9 +52,6 @@ def test_predicts_correctly():
     """
     Checks correctly predicts observation
     """
-    # Define sample input data
-
-
     response = requests.post(f"{BASE_URL}/predict", json=test_data)
     response_json = response.json()
 

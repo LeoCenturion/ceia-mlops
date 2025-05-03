@@ -37,6 +37,7 @@ class WeatherGateway():
     def __init__(self, api_key, base_url="http://dataservice.accuweather.com") -> None:
         self.base_url = base_url
         self.api_key = api_key
+        self.session = requests.Session()
 
     def get_location_key(self, lat, lon):
         url = f"{self.base_url}/locations/v1/cities/geoposition/search"
@@ -45,7 +46,7 @@ class WeatherGateway():
             "q": f"{lat},{lon}"
         }
         key = None
-        response = requests.get(url, params=params)
+        response = self.session.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
             key = data['Key']
@@ -60,7 +61,7 @@ class WeatherGateway():
             "apikey": self.api_key,
             "details": "true"
         }
-        response = requests.get(url, params=params)
+        response = self.session.get(url, params=params)
         if response.status_code == 200:
             data = response.json()
             return adapt_weather_data(data[0], city)

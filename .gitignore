@@ -3,3 +3,7 @@
 /service/automation/__pycache__/*
 airflow/logs/*
 notebooks/.ipynb_checkpoints/
+.aider*
+.env
+*.pyc
+/service/cache/*
