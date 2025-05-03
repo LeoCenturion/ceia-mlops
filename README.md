@@ -65,7 +65,7 @@ El presente proyecto involucra los siguientes servicios y herramientas:
 
 1. **ETL Process**
 
-   Flujo de trabajo:
+   - Flujo de trabajo:
 
    `get_rawdata` >> `get_coords_by_loc` >> `split_dataset` >> `prepo_pipeline` 
 
@@ -121,11 +121,17 @@ El presente proyecto involucra los siguientes servicios y herramientas:
 
 2. Model Experimentation Process
    
-   COMPLETAR
+   - Se define un modelo XGBoost Classifier y se lleva a cabo una búsqueda de hiper-párámetros usando GridSearch, utilizando el *accuracy* como métrica de evaluación. Se guarda el mejor modelo.
+
+   - Se entre al mejor modelo que resulto del paso anterior.
 
 3. Production Process
    
-   COMPLETAR
+   - El usuario hace una solicitud en el front-end estableciendo una ciudad de Australia. El front-end la manda a la API.
+   
+   - La API, por un lado, solicita a la API de AccuWeather por datos requeridos por el modelo en día y ciudad requerida, tales como temperatura, presión, velocidad del viento, etc. Por otra parte, la API solicita a MLflow el mejor modelo.
+   
+   - Con los features de AccuWeather y el mejor modelo de MLflow, hace la predicción y la devuelve al front-end.
 
 ## Corriendo el servicio
 
@@ -140,6 +146,7 @@ Para correr el servicio, asegurarse de tener instalado:
 Adicional para levantar y correr Notebooks:
 - Python 3.8+
 - Poetry
+- Pycharm, VScode o algún otro framework que soporte Jupyter Notebooks.
 
 
 ### Step 0: Clonar repositorio.
@@ -161,9 +168,13 @@ docker compose --profile all up
 
 Importante para Windows: Asegurarse de tener Docker Desktop ejecutándose.
 
-Usa el comando docker ps -a para asegurarte de que todos los servicios estén en estado *healthy*"* o revisa en Docker Desktop.
+Para asegurarte de que todos los servicios estén en estado *healthy*, revisa en Docker Desktop o escribe el comando:
 
-Para acceder a los servicios disponibles, utilizar puertos y credenciales de acceso descriptas en previamente "Detalles de acceso".
+```bash
+docker ps -a
+```
+
+Para acceder a los servicios disponibles, utilizar puertos y credenciales de acceso descriptas a continuación:
 
 
 #### Detalles de acceso
@@ -194,9 +205,9 @@ En Apache Airflow, ejecuta el ETL haciendo clic en el botón de "play". Esperar 
 
 Una vez finalizado, se deberían visualizar los archivos en MinIO.
 
-### Step 3: Model training
+### Step 3: Production model load Process
 
-COMPLETAR
+COMPLETAR CON LEO
 
 
 ### Step 4: Rain predictor
