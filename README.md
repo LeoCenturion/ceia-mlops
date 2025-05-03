@@ -163,7 +163,9 @@ Para la segunda opción, resulta necesario tener descargado e instalado git.
 En la carpeta raíz de este repositorio, correr el siguiente comando para inicializar el servicio completo utilizando Docker Compose:
 
 ```bash
-docker compose --profile all up
+docker compose up postgres s3 -d
+docker compose  up airflow-init airflow-scheduler airflow-cli minio-bucket-init airflow-webserver -d
+
 ```
 
 Importante para Windows: Asegurarse de tener Docker Desktop ejecutándose.
@@ -172,6 +174,18 @@ Para asegurarte de que todos los servicios estén en estado *healthy*, revisa en
 
 ```bash
 docker ps -a
+```
+
+Ahora levante mlflow y realice un entrenamiento para que exista un modelo disponible para el servicio.
+
+```bash
+docker compose up mlflow -d
+docker compose run rain-predictor-trainer
+```
+
+Y luego levante el servicio de predicciones
+```bash
+docker compose up rain-predictor -d
 ```
 
 Para acceder a los servicios disponibles, utilizar puertos y credenciales de acceso descriptas a continuación:
@@ -213,3 +227,4 @@ COMPLETAR CON LEO
 ### Step 4: Rain predictor
 
 ¡Ya puedes hacer planes para mañana! Entra en la API, selecciona la ciudad, y haz clic en "Predict Weather".
+Los resultados obtenidos se pueden comparar con: http://www.bom.gov.au/index.php
