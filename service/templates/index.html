@@ -7,40 +7,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-    <!-- Inicialización del mapa con Leaflet usando un estilo de mapa más limpio (CartoDB Positron) -->
-  <script>
-   function handleResponse(event) {
-       if (event.detail.successful) {
-           const responseData = event.detail.xhr.responseText;
-           try {
-               var selectedCity = document.getElementById("Location").value;
-               if (selectedCity && cityCoords[selectedCity]) {
-                   var coords = cityCoords[selectedCity];
-                   // Centra el mapa en las coordenadas de la ciudad con zoom 12
-                   map.setView(coords, 12);
-                   // Elimina el marcador previo si existe para no duplicarlo
-                   if (cityMarker) {
-                       map.removeLayer(cityMarker);
-                   }
-                   // Selecciona un icono al azar y agrega el marcador al mapa
-                   var randomIcon = rainIcon;
-                   if (responseData.includes('No Rain')) {
-                       randomIcon = sunnyIcon
-                   }
-                   cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
-               }
-
-           } catch (error) {
-               // Handle non-JSON responses or parsing errors
-               console.log("Response Data:", responseData);
-               console.log("Response error:", error);
-           }
-       } else {
-           console.error("Request failed:", event.detail.xhr);
-           document.getElementById("result").innerHTML = "Error processing data.";
-       }
-   }
-  </script>
   <style>
    body {
        font-family: 'Roboto', sans-serif;
@@ -67,7 +33,6 @@
        flex: 0 0 60%;
        position: relative;
    }
-   /* El contenedor del mapa debe tener una altura definida */
    #map {
        height: 100%;
        width: 100%;
@@ -130,20 +95,47 @@
        }
    }
   </style>
+  <script>
+   function handleResponse(event) {
+     if (event.detail.successful) {
+       const responseData = event.detail.xhr.responseText;
+       try {
+         var selectedCity = document.getElementById("Location").value;
+         if (selectedCity && cityCoords[selectedCity]) {
+           var coords = cityCoords[selectedCity];
+           map.setView(coords, 12);
+           if (cityMarker) { map.removeLayer(cityMarker); }
+           var randomIcon = rainIcon;
+           if (responseData.includes('No Rain')) { randomIcon = sunnyIcon; }
+           cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
+         }
+       } catch (error) {
+         console.log("Response Data:", responseData);
+         console.log("Response error:", error);
+       }
+     } else {
+       console.error("Request failed:", event.detail.xhr);
+       document.getElementById("result").innerHTML = "Error processing data.";
+     }
+   }
+  </script>
 </head>
 <body>
   <div class="container">
-    <!-- Sección del formulario (izquierda) -->
     <div class="form-section">
       <h1>Australia Weather Prediction</h1>
-      <form hx-post="/xapi/predict" hx-target="#prediction-result" hx-swap="outerHTML", hx-on::after-request="handleResponse(event)">
+      <form
+        hx-post="/xapi/predict"
+        hx-target="#prediction-result"
+        hx-swap="outerHTML"
+        hx-on::after-request="handleResponse(event)"
+      >
         <div>
           <label for="Date">Date:</label>
           <input type="date" id="Date" name="Date">
         </div>
         <div>
           <label for="Location">Location:</label>
-          <!-- Desplegable con localidades de Australia -->
           <select id="Location" name="Location">
             <option value="">Select a city</option>
             <option value="Sydney">Sydney</option>
@@ -164,73 +156,69 @@
       </form>
       <div id="prediction-result"></div>
     </div>
-    <!-- Sección del mapa (derecha) -->
     <div class="map-section">
-        <div id="map"></div>
+      <div id="map"></div>
     </div>
   </div>
+
+  <script>
+    // Initialize Leaflet map
+    var map = L.map('map').setView([-25, 133], 4);
+    L.tileLayer(
+      'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+      { attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19 }
+    ).addTo(map);
+
+    // City coordinates
+    var cityCoords = {
+      "Sydney":    [-33.8688, 151.2093],
+      "Melbourne": [-37.8136, 144.9631],
+      "Brisbane":  [-27.4698, 153.0251],
+      "Perth":     [-31.9505, 115.8605],
+      "Adelaide":  [-34.9285, 138.6007],
+      "Canberra":  [-35.2809, 149.1300],
+      "Hobart":    [-42.8821, 147.3272],
+      "Darwin":    [-12.4634, 130.8456],
+      "Gold Coast":[-28.0167, 153.4000],
+      "Newcastle": [-32.9283, 151.7817]
+    };
+
+    // Weather icons
+    var sunnyIcon = L.icon({
+      iconUrl: 'https://img.icons8.com/color/48/000000/sun.png',
+      iconSize: [48,48], iconAnchor: [24,48]
+    });
+    var rainIcon = L.icon({
+      iconUrl: 'https://img.icons8.com/color/48/000000/rain.png',
+      iconSize: [48,48], iconAnchor: [24,48]
+    });
+    var cityMarker;
+
+    // Limit date picker to today only
+// Limit date picker to tomorrow only
+document.addEventListener('DOMContentLoaded', function() {
+  const now      = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const tomStr   = tomorrow.toISOString().slice(0,10);  // "YYYY-MM-DD"
+  const dateInput= document.getElementById('Date');
+  dateInput.value = tomStr;
+  dateInput.min   = tomStr;
+  dateInput.max   = tomStr;
+});
+
+    // On form submit, place a random icon marker immediately
+    document.querySelector("form").addEventListener("submit", function(event) {
+      var selectedCity = document.getElementById("Location").value;
+      if (selectedCity && cityCoords[selectedCity]) {
+        var coords = cityCoords[selectedCity];
+        map.setView(coords, 12);
+        if (cityMarker) { map.removeLayer(cityMarker); }
+        var randomIcon = Math.random() < 0.5 ? sunnyIcon : rainIcon;
+        cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
+      }
+      // HTMX will handle the actual request
+    });
+  </script>
 </body>
-<script>
- // Inicializa el mapa centrado en Australia
- var map = L.map('map').setView([-25, 133], 4);
- L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-     maxZoom: 19
- }).addTo(map);
-
- // Diccionario con las coordenadas aproximadas de cada ciudad
- var cityCoords = {
-     "Sydney": [-33.8688, 151.2093],
-     "Melbourne": [-37.8136, 144.9631],
-     "Brisbane": [-27.4698, 153.0251],
-     "Perth": [-31.9505, 115.8605],
-     "Adelaide": [-34.9285, 138.6007],
-     "Canberra": [-35.2809, 149.1300],
-     "Hobart": [-42.8821, 147.3272],
-     "Darwin": [-12.4634, 130.8456],
-     "Gold Coast": [-28.0167, 153.4000],
-     "Newcastle": [-32.9283, 151.7817]
- };
-
- // Definición de los nuevos iconos (usando imágenes de icons8)
- var sunnyIcon = L.icon({
-     iconUrl: 'https://img.icons8.com/color/48/000000/sun.png',
-     iconSize: [48, 48],
-     iconAnchor: [24, 48]
- });
-
- var rainIcon = L.icon({
-     iconUrl: 'https://img.icons8.com/color/48/000000/rain.png',
-     iconSize: [48, 48],
-     iconAnchor: [24, 48]
- });
-
- // Variable para almacenar el marcador actual, en caso de que ya exista
- var cityMarker;
-
- // Función para seleccionar al azar uno de los iconos
- function getRandomIcon() {
-     var icons = [sunnyIcon, rainIcon];
-     return icons[Math.floor(Math.random() * icons.length)];
- }
-
- // Listener para el evento "submit" del formulario
- document.querySelector("form").addEventListener("submit", function(event) {
-     // Obtiene la ciudad seleccionada
-     var selectedCity = document.getElementById("Location").value;
-     if (selectedCity && cityCoords[selectedCity]) {
-         var coords = cityCoords[selectedCity];
-         // Centra el mapa en las coordenadas de la ciudad con zoom 12
-         map.setView(coords, 12);
-         // Elimina el marcador previo si existe para no duplicarlo
-         if (cityMarker) {
-             map.removeLayer(cityMarker);
-         }
-         // Selecciona un icono al azar y agrega el marcador al mapa
-         var randomIcon = getRandomIcon();
-         cityMarker = L.marker(coords, { icon: randomIcon }).addTo(map);
-     }
-     // HTMX se encarga del envío del formulario, por lo que no se invoca event.preventDefault()
- });
-</script>
 </html>
+
