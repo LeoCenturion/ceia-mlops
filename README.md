@@ -34,13 +34,13 @@ El presente proyecto involucra los siguientes servicios y herramientas:
    - <ins>Descripción:</ins> Herramienta para programar, monitorear y administrar flujos de trabajo de datos. 
    - <ins>Uso:</ins> Descarga de set desde la fuente, dividir el set en train/test y pre-procesar los datos. Cargar el modelo entrenado a MLflow.
 
-![airflow](figures/screenshot_airflow.jpg "Apache Airflow")
+![airflow](figures/screenshot_airflow.jpeg "Apache Airflow")
 
 2. **MLflow**: 
    - <ins>Descripción:</ins> Plataforma de código abierto para gestionar el ciclo de vida completo del aprendizaje automático, incluyendo experimentos, reproducibilidad y despliegue de modelos. 
    - <ins>Uso:</ins> Experimentanción y optimización de hiperparámetros. Catalogación de modelos.
 
-![mlflow](figures/screenshot_mlflow.jpg "MLflow")
+![mlflow](figures/screenshot_mlflow.jpeg "MLflow")
 
 3. **MinIO**: 
    - <ins>Descripción:</ins> Servidor de almacenamiento de objetos compatible con S3, optimizada para escalabilidad, rendimiento y uso en entornos de nube y local.
