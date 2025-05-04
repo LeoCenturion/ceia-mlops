@@ -46,7 +46,6 @@ El presente proyecto involucra los siguientes servicios y herramientas:
    - <ins>Descripción:</ins> Servidor de almacenamiento de objetos compatible con S3, optimizada para escalabilidad, rendimiento y uso en entornos de nube y local.
    - <ins>Uso:</ins> Almacenamiento del dasaset crudo, dataset pre-procesado por Airflow y artefactos de MLflow.
 
-
 ![mlflow](figures/screenshot_MinIO_general.jpg "MLflow")
 
 ![mlflow](figures/screenshot_MinIO_data.jpg "MLflow")
