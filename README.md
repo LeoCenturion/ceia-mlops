@@ -121,17 +121,15 @@ El presente proyecto involucra los siguientes servicios y herramientas:
 
 2. Model Experimentation Process
    
-   - Se define un modelo XGBoost Classifier y se lleva a cabo una búsqueda de hiper-párámetros usando GridSearch, utilizando el *accuracy* como métrica de evaluación. Se guarda el mejor modelo.
-
-   - Se entrena al mejor modelo que resulto del paso anterior.
+   - Se define un modelo XGBoost Classifier y se lleva a cabo una búsqueda de hiper-párámetros usando GridSearch, utilizando el la totalidad de los datos de *training* y *accuracy* como métrica de evaluación. Se guarda el mejor modelo ya entrenado.
 
 3. Production Process
    
    - El usuario hace una solicitud en el front-end estableciendo una ciudad de Australia. El front-end la manda a la API.
    
-   - La API, por un lado, solicita a la API de AccuWeather por datos requeridos por el modelo en día y ciudad requerida, tales como temperatura, presión, velocidad del viento, etc. Por otra parte, la API solicita a MLflow el mejor modelo.
+   - La API, por un lado, solicita a la API de AccuWeather por datos requeridos por el modelo en día y ciudad requerida, tales como temperatura, presión, velocidad del viento, etc. Por otra parte, la API solicita a MLflow donde está el mejor modelo.
    
-   - Con los features de AccuWeather y el mejor modelo de MLflow, hace la predicción y la devuelve al front-end.
+   - Con los features de AccuWeather, la API toma el mejor modelo de el bucket de s3 a partir de la ubicación provista por MLflow, hace la predicción y la devuelve al front-end.
 
 ## Corriendo el servicio
 
@@ -213,18 +211,32 @@ Para acceder a los servicios disponibles, utilizar puertos y credenciales de acc
    - <ins>URL:</ins> http://localhost:5000
 
 
-### Step 2: ETL Process
+### Step 2: Rain predictor
 
+¡Ya puedes hacer planes para mañana! Entra en la API, selecciona la ciudad, y haz clic en "Predict Weather".
+Los resultados obtenidos se pueden comparar con: http://www.bom.gov.au/index.php
+
+## Corriendo experimentos
+
+Se presenta como correr los experimentos para la optimización de hiper-parámetros del modelo.
+
+### Step 1: ETL process
 En Apache Airflow, ejecuta el ETL haciendo clic en el botón de "play". Esperar hasta que se complete.
 
 Una vez finalizado, se deberían visualizar los archivos en MinIO.
 
-### Step 3: Production model load Process
 
-COMPLETAR CON LEO
+### Step 2: Hyper-parameter tunning
+Desde el directorio */notebooks*, ejecutar:
 
+```bash
+poetry run jupyter notebook
+```
 
-### Step 4: Rain predictor
+Ejecutar todas las celdas del notebook.
 
-¡Ya puedes hacer planes para mañana! Entra en la API, selecciona la ciudad, y haz clic en "Predict Weather".
-Los resultados obtenidos se pueden comparar con: http://www.bom.gov.au/index.php
+## Pendientes a futuro
+
+- Vinculación MLflow con datasets almacenados en minIO, generados a través de dag ELTL process de Airflow.
+
+- Entrar el modelo desde Airflow.
